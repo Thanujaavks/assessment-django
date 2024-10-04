@@ -1,6 +1,6 @@
 # Assessment
 
-This repository contains the backend API. It is a RESTful API built using the Django REST Framework.
+This repository contains the backend API and Front End React Js. 
 
 ## How to start the API
 
@@ -35,13 +35,17 @@ BASE_URL = ``http://127.0.0.1:8000/``
 
 ## How to start the front-end
 
-``
-npm install
-``
+## Project setup
 
-``
+```
+npm install
+```
+
+### Run the project
+
+```
 npm start
-``
+```
 
 
 
