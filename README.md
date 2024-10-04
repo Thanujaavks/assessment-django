@@ -27,13 +27,6 @@ Migrate the Project :
 ``
 python manage.py makemigrations playground
 ``
-
-### Install pandas
-
-```
-pip install pandas
-```
-
 ### API Endpoints
 
 The API has the following endpoints:
@@ -54,6 +47,12 @@ npm install
 npm start
 ```
 
+# Django + React Docker Setup
 
+## Setup Instructions
 
+1. Clone the repository
+2. Build and run the Docker containers:
+   ```bash
+   docker-compose up --build
 

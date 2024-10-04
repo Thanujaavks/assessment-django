@@ -1,257 +1,154 @@
 import { useEffect, useState } from "react";
 import axios from 'axios';
+import CommonPagination from "./CommonPagination";
+
+
+
+
 function Student() {
 
-    const [id, setId] = useState('');
-    const [name, setName] = useState("");
-    const [address, setAddress] = useState("");
-    const [fee, setFee] = useState("");
-    const [students, setUsers] = useState([]);
+  const [tableHead, setTableHead] = useState([]);
+  const [students, setstudents] = useState([]);
+  const [page, setpage] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [file, setFile] = useState(null);
+  const [tableData, setTableData] = useState([])
+  const [message, setMessage] = useState('');
 
+  useEffect(() => {
+    Test();
+  }, [page])
 
-    useEffect(() => {
-        (async () => await Test())();
-    }, []);
+  useEffect(() => {
+    const tabledd = students.map(item => {
+      let mappedItem = {};
+      tableHead.forEach(header => {
+        mappedItem[header] = item[header];
+      });
+      return mappedItem;
+    });
 
-    async function Test() {
-        axios.get('http://127.0.0.1:8000/booking')
-            .then(function (response) {
-                // handle success
-                console.log(response);
-            })
-            .catch(function (error) {
-                // handle error
-                console.log(error);
-            })
-            .finally(function () {
-                // always executed
-            });
+    console.log(tabledd)
+  }, [tableHead])
 
+  const selectArray = [
+    { key: "school", value: ["StudentID", "school_name"] },
+    { key: "classTable", value: ["StudentID", "Class"] },
+    { key: "assessmentAreas", value: ["StudentID", "Assessment_Areas"] },
+    { key: "awards", value: ["StudentID", "award"] },
+    { key: "student", value: ["StudentID", "last_name"] },
+    { key: "answers", value: ["StudentID", "Answers"] },
+    { key: "subject", value: ["StudentID", "Subject", "Subject_Contents"] },
+    {
+      key: "summary", value: [
+        "school_name",
+        "sydney_participants",
+        "sydney_percentile",
+        "Assessment_Areas",
+        "award",
+        "Class",
+        "correct_answer_percentage_per_class",
+        "Correct_Answers",
+        "StudentID",
+        "participant",
+        "student_score",
+        "Subject",
+        "Subject_Contents",
+        "year_level",
+        "Answers",
+        "Question_Number"
+      ]
     }
+  ];
 
-    async function Load() {
-        const result = await axios.get(
-            "http://127.0.0.1:8000/student");
-        setUsers(result.data);
-        console.log(result.data);
+
+
+  function handleSelect(e) {
+    console.log(e.target.value);
+    setTableHead(selectArray.find(x => x.key === e.target.value).value);
+    console.log(tableHead);
+  }
+
+  const handlecsvChange = (e) => {
+    const file = e.target.files[0];
+    console.log(e.target.files[0])
+    setFile(file);
+  };
+
+
+  async function Test() {
+    if (file) {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const response = await axios.post(`http://127.0.0.1:8000/booking?page=${page}&page_size=100`, formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+        console.warn(response?.data?.message);
+        setTotal(response?.data?.pagination?.total_pages)
+        setstudents(response?.data?.message);
+      } catch (error) {
+        console.error('Error:', error);
+        throw error;
+      }
     }
-
-
-    async function save(event) {
-        event.preventDefault();
-        try {
-            await axios.post("http://127.0.0.1:8000/student",
-                {
-
-                    name: name,
-                    address: address,
-                    fee: fee
-
-                });
-            alert("Student Registation Successfully");
-            setId("");
-            setName("");
-            setAddress("");
-            setFee("");
-            Load();
+  }
 
 
 
-        }
-        catch (err) {
-            alert("Student Registation Failed");
-        }
-    }
-
-
-
-    async function editStudent(students) {
-        setName(students.name);
-        setAddress(students.address);
-        setFee(students.fee);
-        setId(students.id);
-
-    }
-    async function DeleteStudent(id) {
-
-        await axios.delete("http://127.0.0.1:8000/student/" + id);
-        alert("Student deleted Successfully");
-        setId("");
-        setName("");
-        setAddress("");
-        setFee("");
-        Load();
-
-
-    }
-    async function update(event) {
-        event.preventDefault();
-        try {
-
-            await axios.put("http://127.0.0.1:8000/student/" + students.find(u => u.id === id).id || id,
-                {
-                    id: id,
-                    name: name,
-                    address: address,
-                    fee: fee
-
-                });
-            alert("Student Updateddddd");
-            setId("");
-            setName("");
-            setAddress("");
-            setFee("");
-            Load();
-
-        }
-        catch (err) {
-            alert(" Student updateddd Failed");
-        }
-    }
-    return (
-        <div>
-            <h1>Interview Dataset</h1>
-            <div class="container mt-4" >
-                <form>
-
-                    <div>
-
-                        <button class="btn btn-warning mt-4" onClick={update}>upload</button>
-                    </div>
-
-
-                </form>
+  return (
+    <div>
+      <h1>Student Details</h1>
+      <div class="container mt-4" >
+        <form>
+          <form id="csv-upload-form">
+            <div class="mb-3">
+              <label for="csvFile" class="form-label">CSV file</label>
+              <input type="file" accept=".csv" onChange={handlecsvChange} class="form-control" id="csvFile" name="file" required />
             </div>
+            <button type="button" onClick={Test} class="btn btn-primary">Upload</button>
+          </form>
+        </form>
+      </div>
 
-            <h1>School tabel</h1>
-            <table class="table table-dark" align="center">
-                <thead>
-                    <tr>
-                        <th scope="col">School Id</th>
-                        <th scope="col">School Name</th>
-                        
-                    </tr>
-                </thead>
-                {students.map(function fn(student) {
-                    return (
-                        <tbody>
-                            <tr>
-                                <th scope="row">{student.id} </th>
-                                <td>{student.name}</td>
-                               
-                            </tr>
-                        </tbody>
-                    );
-                })}
-            </table>
-            <h1>Class tabel</h1>
-            <table class="table table-dark" align="center">
-                <thead>
-                    <tr>
-                        <th scope="col">Class Id</th>
-                        <th scope="col">Class Name</th>
-                        
-                    </tr>
-                </thead>
-                {students.map(function fn(student) {
-                    return (
-                        <tbody>
-                            <tr>
-                                <th scope="row">{student.id} </th>
-                                <td>{student.name}</td>
-                                
-                            </tr>
-                        </tbody>
-                    );
-                })}
-            </table>
-            <h1>Assessment_Areas tabel</h1>
-            <table class="table table-dark" align="center">
-                <thead>
-                    <tr>
-                        <th scope="col">School Id</th>
-                        <th scope="col">School Name</th>
-                        
-                    </tr>
-                </thead>
-                {students.map(function fn(student) {
-                    return (
-                        <tbody>
-                            <tr>
-                                <th scope="row">{student.id} </th>
-                                <td>{student.name}</td>
-                                
-                            </tr>
-                        </tbody>
-                    );
-                })}
-            </table>
-            <h1>Student tabel</h1>
-            <table class="table table-dark" align="center">
-                <thead>
-                    <tr>
-                        <th scope="col">Student Id</th>
-                        <th scope="col">Student Name</th>
-                        
-                    </tr>
-                </thead>
-                {students.map(function fn(student) {
-                    return (
-                        <tbody>
-                            <tr>
-                                <th scope="row">{student.id} </th>
-                                <td>{student.name}</td>
-                                
-                            </tr>
-                        </tbody>
-                    );
-                })}
-            </table>
-            <h1>Answer tabel</h1>
-            <table class="table table-dark" align="center">
-                <thead>
-                    <tr>
-                        <th scope="col">Answer Id</th>
-                        <th scope="col">Answer Name</th>
-                        
-                    </tr>
-                </thead>
-                {students.map(function fn(student) {
-                    return (
-                        <tbody>
-                            <tr>
-                                <th scope="row">{student.id} </th>
-                                <td>{student.name}</td>
-                               
-                            </tr>
-                        </tbody>
-                    );
-                })}
-            </table>
-            <h1>Subject tabel</h1>
-            <table class="table table-dark" align="center">
-                <thead>
-                    <tr>
-                        <th scope="col">Subject Id</th>
-                        <th scope="col">Subject Name</th>
-                        <th scope="col">Subject Score</th>
-                        
-                    </tr>
-                </thead>
-                {students.map(function fn(student) {
-                    return (
-                        <tbody>
-                            <tr>
-                                <th scope="row">{student.id} </th>
-                                <td>{student.name}</td>
-                                <td>{student.address}</td>
-                                
-                            </tr>
-                        </tbody>
-                    );
-                })}
-            </table>
+
+      <div className={"container"}>
+        <select className="form-select" aria-label="Default select example" onChange={handleSelect}>
+          <option selected hidden>select</option>
+          {selectArray.map((value, key) => <option value={value.key}>{value.key}</option>)}
+        </select>
+      </div>
+
+      <div className="container mt-5 mb-5">
+        <div className="table-responsive">
+
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                {tableHead.map((value, key) => <th scope="col">{value}</th>)}
+              </tr>
+            </thead>
+            <tbody>
+              {students?.map((student, studentIndex) => (
+                <tr key={studentIndex}>
+                  {tableHead.map((key, index) => (
+                    <td key={index}>{student[key]}</td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
         </div>
-    );
+      </div>
+
+
+
+      <CommonPagination pages={total} currentPage={page} setCurrentPage={setpage} />
+    </div>
+  );
 }
 export default Student;

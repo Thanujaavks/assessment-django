@@ -19,5 +19,5 @@ from AssessmentApp import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('booking/', views.BookingViewSet.as_view()),
+    path('booking', views.BookingViewSet.as_view()),
 ]
