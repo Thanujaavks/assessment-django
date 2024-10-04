@@ -27,8 +27,37 @@ class BookingViewSet(APIView):
             try:
                 array.append({
                    'school_name': row['school_name'],   # Keys should be strings
-                    # 'year': row['year'],
-                    # 'StudentID': row['StudentID']
+                    'year': row['year'],
+                    'StudentID': row['StudentID']
+                     'First Name': row['First Name'],
+                    'Last Name': row['Last Name']
+                    'Year Level': row['Year Level']
+                     'Class': row['Class'],
+                    'Subject': row['Subject']
+                    'Answers': row['Answers'],   # Keys should be strings
+                    'Correct Answers': row['Correct Answers'],
+                    'Question Number': row['Question Number']
+                     'Subject Contents': row['Subject Contents'],
+                    'Assessment Areas': row['Assessment Areas']
+                    'sydney_correct_count_percentage': row['sydney_correct_count_percentage']
+                     'sydney_average_score': row['Csydney_average_scorelass'],
+                    'Subject': row['Subject']
+                     'sydney_participants': row['sydney_participants']
+                     'student_score': row['student_score'],
+                    'student_total_assessed': row['student_total_assessed']
+                     'student_area_assessed_score': row['student_area_assessed_score'],
+                    'total_area_assessed_score': row['total_area_assessed_score']
+                     'participant': row['participant']
+                     'correct_answer_percentage_per_class': row['correct_answer_percentage_per_class'],
+                    'average_score': row['average_score']
+                    'school_percentile': row['school_percentile']
+                     'student_score': row['student_score'],
+                    'student_total_assessed': row['student_total_assessed']
+                     'student_area_assessed_score': row['student_area_assessed_score'],
+                    'total_area_assessed_score': row['total_area_assessed_score']
+                     'participant': row['participant']
+                     'correct_answer_percentage_per_class': row['correct_answer_percentage_per_class'],
+                    'average_score': row['average_score']
                 }
                 )
             except Exception as e:
