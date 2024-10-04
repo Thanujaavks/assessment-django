@@ -27,6 +27,13 @@ Migrate the Project :
 ``
 python manage.py makemigrations playground
 ``
+
+### Install pandas
+
+```
+pip install pandas
+```
+
 ### API Endpoints
 
 The API has the following endpoints:
@@ -46,6 +53,7 @@ npm install
 ```
 npm start
 ```
+
 
 
 
